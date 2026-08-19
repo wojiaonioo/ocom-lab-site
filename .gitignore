@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+.cache/
+# 验证产物：截图留档在 docs/verification/ 下，其余临时件不入库
+tmp/

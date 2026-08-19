@@ -1,6 +1,17 @@
 # 发布 · DEPLOY
 
-零构建静态站：**把整个仓库根目录当作站点根**即可，没有 build 命令、没有输出目录。
+零构建静态站。**仓库根 ≠ 站点根**：
+
+```
+public/     ← 发布根，CF Pages 的 build output directory 指向这里
+docs/       ← 设计与验证文档，不发布
+tools/      ← lint 脚本，不发布
+CLAUDE.md   ← 会话工作指令，不发布
+```
+
+一开始把输出目录设为 `/`（整个仓库），结果 `CLAUDE.md`、`tools/` 全部对外可访问。
+试图用 `_redirects` 写 404 规则屏蔽 —— **无效**：CF Pages 中静态文件优先于 `_redirects`，
+已存在的文件无法在那里屏蔽。**"哪些文件对外可见"只能由目录边界决定，不能靠路由规则补救。**
 
 ```
 体积：gzip 后约 80.6 KB（HTML 16K + CSS 68K + JS 280K，48 个 ES 模块）
@@ -49,7 +60,7 @@ Dashboard → Workers & Pages → Create → Pages → Connect to Git
 |---|---|
 | Framework preset | **None** |
 | Build command | **留空** |
-| Build output directory | **`/`**（仓库根目录） |
+| Build output directory | **`public`** |
 | Root directory | 留空 |
 
 零构建，CF 只做静态分发。
@@ -89,6 +100,7 @@ git push          # CF Pages 自动构建部署，约 30 秒
 
 ## 备注
 
-- `.nojekyll`：GitHub Pages 兜底用（禁用 Jekyll 处理）。CF Pages 忽略它。
-- `_headers`：CF Pages 的响应头配置。GitHub Pages 忽略它。
+- `public/.nojekyll`：GitHub Pages 兜底用（禁用 Jekyll 处理）。CF Pages 忽略它。
+- `public/_headers`：CF Pages 的响应头配置。GitHub Pages 忽略它。
+- `public/_redirects`：只保留"未知路径回首页"。**不要指望用它屏蔽文件**（见上）。
 - 所有资源路径均为相对路径（`./src/...`），因此在子路径（如 `user.github.io/repo/`）下同样可用。

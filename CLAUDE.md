@@ -35,7 +35,7 @@
 ```bash
 node tools/check-layers.mjs     # 分层规则：越级 / 纯层碰 DOM / 循环依赖 / export default
 node tools/check-contrast.mjs   # 色彩令牌对比度（WCAG AA 4.5:1）
-python3 -m http.server 5173     # 本地预览（原生 ESM，无构建步骤）
+python3 -m http.server 5173 -d public   # 本地预览（发布根是 public/）
 ```
 
 浏览器验证请用 chrome-devtools 的 `emulate` 改视口，**不要用 `resize_page`**

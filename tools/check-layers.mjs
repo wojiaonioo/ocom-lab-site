@@ -19,7 +19,8 @@ import { join, relative, resolve, dirname, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const JS_ROOT = join(ROOT, 'src', 'js');
+/** 站点发布根是 public/，仓库根另含 docs/ tools/ 等不发布的产物。 */
+const JS_ROOT = join(ROOT, 'public', 'src', 'js');
 
 /** 层级定义：数字越小越稳定。同层可互引，跨层只能高 → 低。 */
 const LEVEL = { core: 0, science: 0, content: 0, i18n: 1, figures: 2, scenes: 2, ui: 3, main: 4 };

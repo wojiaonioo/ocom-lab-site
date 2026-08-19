@@ -3,8 +3,9 @@
 首页 demo 原型。零构建、零运行时依赖，原生 ES Modules。
 
 ```bash
-python3 -m http.server 5173      # → http://localhost:5173
+python3 -m http.server 5173 -d public   # → http://localhost:5173
 node tools/check-layers.mjs      # 分层规则检查
+node tools/check-contrast.mjs    # 色彩令牌对比度检查
 ```
 
 ## 这是什么

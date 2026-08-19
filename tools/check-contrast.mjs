@@ -17,7 +17,7 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const TOKENS = join(ROOT, 'src', 'styles', 'tokens.css');
+const TOKENS = join(ROOT, 'public', 'src', 'styles', 'tokens.css');
 
 /** WCAG 2.1 相对亮度 */
 function luminance([r, g, b]) {

@@ -56,11 +56,14 @@ node tools/check-layers.mjs      # 越级 import / level0 里的 DOM 全局 → 
 ```
 site/
 ├── CLAUDE.md                    # 上下文入口：任何会话先读这个
-├── index.html                   # 唯一 HTML，内容骨架（无 JS 也可读）
-├── tools/check-layers.mjs       # 分层规则的执行者
+├── tools/                       # check-layers.mjs / check-contrast.mjs（规则的执行者）
 ├── docs/                        # 见 §4
-└── src/
-    ├── styles/
+└── public/                      # ← **发布根**，只有这里的内容会上线
+    ├── index.html               # 唯一 HTML，内容骨架（无 JS 也可读）
+    ├── _headers _redirects      # Cloudflare Pages 配置
+    ├── robots.txt .nojekyll
+    └── src/
+        ├── styles/
     │   ├── tokens.css           # 设计令牌：色彩/字体/间距/层级的唯一来源
     │   ├── base.css             # reset + 元素基线 + a11y
     │   ├── layout.css           # 栅格、全幅 band、sticky stage

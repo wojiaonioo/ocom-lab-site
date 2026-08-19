@@ -11,6 +11,8 @@
 > 详见 [`docs/DECISIONS.md`](./docs/DECISIONS.md) 的 ADR-005。
 
 
+**在线预览**：https://wojiaonioo.github.io/ocom-lab-site/
+
 首页 demo 原型。零构建、零运行时依赖，原生 ES Modules。
 
 ```bash

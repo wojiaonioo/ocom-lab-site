@@ -1,7 +1,9 @@
 # 发布 · DEPLOY
 
-> **当前线上**：https://ocom.114451.xyz　（CF Pages 项目 `ocom-lab-site`，源 `wojiaonioo/ocom-lab-site` 私有仓库）
-> 备用入口 https://ocom-lab-site.pages.dev
+> **主入口**：https://wojiaonioo.github.io/ocom-lab-site/　（GitHub Pages，Actions 发布 `public/`）
+> 备用入口：https://ocom.114451.xyz　·　https://ocom-lab-site.pages.dev　（Cloudflare Pages）
+>
+> 仓库 `wojiaonioo/ocom-lab-site`，**公开**。
 
 
 零构建静态站。**仓库根 ≠ 站点根**：
@@ -142,3 +144,53 @@ Canvas              非空率 100%
 首次验证时 `/CLAUDE.md` 仍返回原文，一度以为屏蔽失败 —— 实为 CF 边缘缓存
 （`cf-cache-status: HIT`）。**判断是否生效要看响应体，不能只看状态码**：
 本站 `_redirects` 有 `/* → /index.html 200` 兜底，未知路径本来就返回 200。
+
+
+---
+
+## GitHub Pages（主入口）
+
+### 为什么仓库必须公开
+
+免费账号的 GitHub Pages **只能从公开仓库发布**（设置页原话：
+"Upgrade or make this repository public to enable Pages"）。私有仓库发布需 Pro 及以上。
+
+仓库公开后，占位内容可被浏览与 fork。站点上的 `noindex` 只挡搜索引擎抓**站点**，
+挡不住**仓库本身**被收录，因此 README 顶部加了醒目免责声明（非官方 / 占位内容 / 示意模型）。
+
+### 为什么走 Actions 而不是分支发布
+
+Pages 的分支发布只支持**仓库根**或 **`/docs`**，而站点根是 `public/`，两者都不匹配
+（`/docs` 已被设计文档占用）。因此用 `.github/workflows/pages.yml` 显式上传 `public/`，
+与 Cloudflare Pages 的边界保持一致：`docs/` `tools/` `CLAUDE.md` 不发布。
+
+顺带把三个检查接进 CI，**不通过就不发布**：
+
+```
+node tools/check-layers.mjs      分层规则
+node tools/check-contrast.mjs    色彩令牌对比度
+content/index.js selfCheck()     内容模型
+```
+
+### 与 Cloudflare 版的差异
+
+| | GitHub Pages | Cloudflare Pages |
+|---|---|---|
+| URL | `wojiaonioo.github.io/ocom-lab-site/`（**子路径**） | `ocom.114451.xyz`（根路径） |
+| 大陆访问 | 不稳 | 可访问 |
+| `_headers`（`X-Robots-Tag`） | **忽略** | 生效 |
+| `_redirects`（未知路径回首页） | **忽略**，用 GitHub 默认 404 | 生效 |
+| `robots.txt` | **不生效** —— 项目站的 robots.txt 必须在 `wojiaonioo.github.io/robots.txt`，子路径下的不被读取 | 生效 |
+
+因此在 GitHub Pages 上，禁止收录只剩 `<meta name="robots">` 这一道。
+站点全部资源为相对路径，子路径部署已实测可用。
+
+### 上线验收实测（GitHub Pages）
+
+```
+站点资源      index.html / main.css / main.js / flow-field.js / station-map.js  全 200
+不应发布的    CLAUDE.md、tools/、docs/  全部 404 ✓
+meta robots   noindex, nofollow ✓
+浏览器渲染    9 版块 / 4 方向 / 8 论文 / 6 成员 / 3 航次 / 6 站位 / 剖面 SVG 全在
+Canvas        非空率 100%
+```

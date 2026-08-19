@@ -1,0 +1,166 @@
+/* ===========================================================================
+   各内容版块的专属排布
+   通用的卡片 / 控件 / 图件样式在 components/ 下，这里只写"这个版块怎么摆"。
+   =========================================================================== */
+
+/* ---- 代表性发现（方案 §06.1 模块 05：左图右文）---- */
+.discovery-figure { position: sticky; top: calc(var(--header-h) + var(--sp-5)); }
+.discovery-body { display: grid; gap: var(--sp-4); align-content: start; }
+.discovery-title { font-size: clamp(1.4rem, 2.4vw, 2rem); }
+.discovery-question {
+  font-size: 1.0625rem;
+  color: var(--text-body);
+  padding-left: var(--sp-4);
+  border-left: 2px solid var(--c-coral);
+}
+@media (max-width: 1023px) {
+  .discovery-figure { position: static; }
+}
+
+/* ---- 科研流程（方案 §06.2 主轴）---- */
+.workflow-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+.flow-step {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  padding-top: var(--sp-5);
+}
+.flow-index {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--c-current);
+  font-size: 0.6875rem;
+}
+.flow-connector {
+  position: absolute;
+  top: 0.55rem;
+  left: 1.6rem;
+  right: calc(-1 * var(--sp-4));
+  height: 1px;
+  background: var(--line-dark);
+}
+.flow-step:last-child .flow-connector { display: none; }
+.flow-name {
+  color: var(--c-sediment);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+.flow-title { font-size: 1.0625rem; color: var(--text-strong-dark); }
+.flow-ask { font-size: var(--fs-small); color: var(--c-current); }
+.flow-body { font-size: var(--fs-small); color: var(--text-muted-dark); }
+
+@media (max-width: 1023px) {
+  .workflow-rail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .flow-connector { display: none; }
+}
+@media (max-width: 560px) {
+  .workflow-rail { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ---- 观测与航次 ---- */
+.expedition-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: clamp(var(--sp-5), 3vw, var(--sp-7));
+  align-items: start;
+}
+#station-map {
+  display: grid;
+  gap: var(--sp-3);
+  position: sticky;
+  top: calc(var(--header-h) + var(--sp-5));
+}
+#expedition-list { display: grid; gap: var(--sp-4); }
+
+.station-list { display: grid; gap: var(--sp-2); }
+.station-row {
+  display: grid;
+  gap: 0.15rem;
+  padding: var(--sp-3) 0;
+  border-bottom: 1px solid var(--line-dark);
+}
+.station-name { color: var(--text-strong-dark); font-weight: 600; }
+.station-meta { color: var(--c-current); }
+.station-platform { font-size: var(--fs-small); color: var(--text-muted-dark); }
+
+@media (max-width: 1023px) {
+  .expedition-layout { grid-template-columns: minmax(0, 1fr); }
+  #station-map { position: static; }
+}
+
+/* ---- 论文 ---- */
+.publication-toolbar {
+  display: grid;
+  gap: var(--sp-4);
+  margin-bottom: var(--sp-6);
+  padding-bottom: var(--sp-5);
+  border-bottom: 1px solid var(--line);
+}
+#publication-filters { display: grid; gap: var(--sp-3); }
+#publication-count {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--text-faint);
+}
+#publication-list { display: grid; gap: var(--sp-4); }
+
+/* ---- 团队 / 新闻 / 加入 ---- */
+#people-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sp-4); }
+@media (max-width: 1023px) { #people-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { #people-grid { grid-template-columns: minmax(0, 1fr); } }
+
+.news-list { display: grid; gap: 0; margin-top: var(--sp-6); }
+.news-item {
+  display: grid;
+  grid-template-columns: 6.5rem 5rem minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: baseline;
+  padding: var(--sp-3) 0;
+  border-top: 1px solid var(--line);
+}
+.news-date { color: var(--text-faint); }
+.news-kind {
+  font-size: 0.75rem;
+  color: var(--c-observation-ink);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  padding: 0.05rem 0.4rem;
+  justify-self: start;
+}
+.news-title { color: var(--text-strong); }
+@media (max-width: 640px) {
+  .news-item { grid-template-columns: minmax(0, 1fr); gap: 0.2rem; }
+}
+
+.join-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-7);
+  align-items: start;
+}
+.join-body { font-size: 1.125rem; color: var(--text-body-dark); }
+.join-caveat { margin-top: var(--sp-3); font-size: var(--fs-small); color: var(--text-muted-dark); }
+@media (max-width: 1023px) { .join-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---- 页脚 ---- */
+.site-footer {
+  padding-block: var(--sp-6);
+  background: #021019;
+  color: var(--text-muted-dark);
+  font-size: var(--fs-small);
+}
+.footer-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  justify-content: space-between;
+  align-items: baseline;
+}
+.site-footer a { color: var(--c-current); }

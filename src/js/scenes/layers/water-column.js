@@ -13,8 +13,8 @@ import { mixColor } from '../palette.js';
 /** 色标：深度（m）→ 令牌。取自方案 §04 色彩令牌表。 */
 const STOPS = [
   { depth: 0, key: 'surface' },
-  { depth: 900, key: 'trench' },
-  { depth: 3200, key: 'midwater' },
+  { depth: 1800, key: 'trench' },
+  { depth: 5200, key: 'midwater' },
   { depth: 11400, key: 'abyss' },
 ];
 

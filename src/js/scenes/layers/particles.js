@@ -8,17 +8,17 @@
  * 因此不做速度线拉伸、不做辉光叠加、不做鼠标扰动。粒子只做一件事：跟着速度场走。
  *
  * 性能：轨迹按主导层分成 3 条 Path2D 批量描边，每帧 3 次 stroke，
- * 而不是 520 粒子 × 12 段 = 6240 次。
+ * 而不是 620 粒子 × 14 段 = 8680 次。
  */
 
-import { rng, wrap } from '../../science/math.js';
+import { rng } from '../../science/math.js';
 import { velocityAt, dominantLayer, X_TO_M } from '../../science/flow-field.js';
 import { depthAt, TRANSECT } from '../../science/bathymetry.js';
 import { rgba } from '../palette.js';
 
 /** 质量档 → 粒子数与轨迹长度。low 档不画粒子，由 fallback 的静态流线接手。 */
 const PROFILE = {
-  high: { count: 520, trail: 12 },
+  high: { count: 620, trail: 14 },
   medium: { count: 260, trail: 7 },
   low: { count: 0, trail: 0 },
 };
@@ -29,9 +29,21 @@ const TONE = { upper: 'observation', intermediate: 'current', hadal: 'sediment' 
 /** 粒子寿命（海洋时间秒）上限，加随机抖动，避免整批同时重生造成"呼吸"。 */
 const LIFE_BASE = 9e5;
 
+/**
+ * 轨迹采样间隔（帧）。
+ *
+ * 逐帧记点时，14 个点只覆盖 14 帧 ≈ 0.23 s 墙钟，
+ * 对应位移约断面宽度的 0.2% —— 在 2400 px 宽的画布上只有 5 px，肉眼看不出流动
+ * （首次浏览器验证实测，见 docs/VERIFICATION.md V-003）。
+ * 每 5 帧记一点后，同样 14 个点覆盖 70 帧 ≈ 1.2 s，轨迹长度约 25 px，
+ * 既能读出方向，又不违反方案 §08「粒子速度保持缓慢」。
+ */
+const TRAIL_EVERY = 5;
+
 export function createParticles(quality = 'high') {
   const random = rng(20140319); // 确定性种子：截图可逐帧复现（science/math.js 说明）
   let profile = PROFILE[quality] || PROFILE.high;
+  let frameTick = 0;
   /** @type {Array<{x:number,z:number,age:number,life:number,tone:string,trail:Float64Array,head:number,filled:number}>} */
   let pool = [];
 
@@ -83,12 +95,14 @@ export function createParticles(quality = 'high') {
 
       // 海洋时间步长：墙钟 dt × TIME_SCALE，由帧对象给出（见 scene-contract.js）
       const step = frame.oceanDt;
+      frameTick += 1;
+      const record = frameTick % TRAIL_EVERY === 0;
 
       for (const p of pool) {
         const { u, w } = velocityAt(p.x, p.z, { time: frame.time, mode: frame.mode });
 
         // 记录轨迹（环形缓冲，写在推进之前，头部即当前位置）
-        if (profile.trail) {
+        if (profile.trail && record) {
           p.trail[p.head * 2] = p.x;
           p.trail[p.head * 2 + 1] = p.z;
           p.head = (p.head + 1) % profile.trail;
@@ -145,13 +159,13 @@ export function createParticles(quality = 'high') {
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       for (const [tone, path] of Object.entries(paths)) {
-        ctx.strokeStyle = rgba(color[tone], tone === 'sediment' ? 0.34 : 0.3);
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = rgba(color[tone], tone === 'sediment' ? 0.48 : 0.42);
+        ctx.lineWidth = 1.15;
         ctx.stroke(path);
       }
       for (const [tone, list] of Object.entries(heads)) {
-        ctx.fillStyle = rgba(color[tone], 0.85);
-        for (let i = 0; i < list.length; i += 2) ctx.fillRect(list[i] - 0.9, list[i + 1] - 0.9, 1.8, 1.8);
+        ctx.fillStyle = rgba(color[tone], 0.96);
+        for (let i = 0; i < list.length; i += 2) ctx.fillRect(list[i] - 1, list[i + 1] - 1, 2, 2);
       }
       ctx.restore();
     },
@@ -161,6 +175,3 @@ export function createParticles(quality = 'high') {
     },
   };
 }
-
-/** 供 fallback 复用：把回绕逻辑收在一处。 */
-export const wrapX = (x) => wrap(x, 0, 1);

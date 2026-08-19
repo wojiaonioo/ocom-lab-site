@@ -27,13 +27,19 @@
 - **禁止**：编造真实人名、论文标题、DOI、联系方式。占位内容一律标 `PLACEHOLDER`，
   并在页面上有可见的 demo 提示条。人员与论文信息上线前须由研究室核验（方案 §11/§12）
 - **禁止**：`export default`（静态依赖扫描需要具名导出）
+- **禁止**：改动方案 §04 的七个品牌色令牌。浅底文字对比度不够时另立 `--c-*-ink` 变体
+- **注意**：首屏与版块抬头文案在 `index.html` 与 `content/site.js` 各有一份，**改一处必须改两处**（ADR-008）
 
 ## 提交前必跑
 
 ```bash
-node tools/check-layers.mjs     # 分层规则
+node tools/check-layers.mjs     # 分层规则：越级 / 纯层碰 DOM / 循环依赖 / export default
+node tools/check-contrast.mjs   # 色彩令牌对比度（WCAG AA 4.5:1）
 python3 -m http.server 5173     # 本地预览（原生 ESM，无构建步骤）
 ```
+
+浏览器验证请用 chrome-devtools 的 `emulate` 改视口，**不要用 `resize_page`**
+（那会改真实浏览器窗口）；验证完必须把 viewport 传空串清除覆盖。
 
 ## 当前状态
 

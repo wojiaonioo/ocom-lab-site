@@ -1,0 +1,179 @@
+/* ===========================================================================
+   首屏舞台内的文字层
+   方案 §06.1 模块 02：78–86vh；一个稳定主视觉，不做高频自动轮播。
+   这里用 100svh 的 sticky 舞台承载，文案层随下潜进度淡出（ADR-004）。
+   =========================================================================== */
+
+/* 外层只负责铺满 sticky 区；居中与留白交给内层的 .container。
+   两者合成一个元素会互相冲突：inset:0 钉死左右边，margin-inline:auto 就失效，
+   内容框被顶到视口左侧 0 位，与按视口居中定位的序号侧栏正面相撞
+   （首次浏览器验证复现，见 docs/VERIFICATION.md V-003）。 */
+.stage-content {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  pointer-events: none;
+}
+.stage-inner {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding-block: calc(var(--header-h) + var(--sp-7)) var(--sp-6);
+  min-height: 0;
+}
+.stage-inner > * { pointer-events: auto; }
+
+.stage-panel {
+  align-self: center;
+  max-width: 46ch;
+  transition: opacity var(--dur-slow) var(--ease-out), transform var(--dur-slow) var(--ease-out);
+}
+
+/* 面板的显隐由 CSS 变量 --stage-progress 驱动，避免 JS 直接改内联样式 */
+.stage-panel[data-panel="hero"] {
+  opacity: clamp(0, calc((0.38 - var(--stage-progress, 0)) / 0.22), 1);
+  transform: translateY(calc(var(--stage-progress, 0) * -28px));
+}
+.stage-panel[data-panel="hadal"] {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  opacity: clamp(0, calc((var(--stage-progress, 0) - 0.46) / 0.2), 1);
+}
+
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--c-current);
+  margin-bottom: var(--sp-4);
+}
+.hero-title {
+  color: var(--text-strong-dark);
+  margin-bottom: var(--sp-4);
+}
+.hero-concept {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  color: var(--c-sediment);
+  margin-bottom: var(--sp-3);
+}
+.hero-lede {
+  color: var(--text-body-dark);
+  font-size: 1.0625rem;
+  margin-bottom: var(--sp-5);
+}
+.hero-actions { display: flex; flex-wrap: wrap; gap: var(--sp-3); }
+
+/* ---- 深渊读数面板 ---- */
+.hadal-panel {
+  padding: var(--sp-5);
+  border: 1px solid var(--line-dark-strong);
+  border-radius: var(--radius-lg);
+  background: rgba(3, 23, 34, 0.55);
+  backdrop-filter: blur(8px);
+}
+.hadal-title { color: var(--text-strong-dark); font-size: 1.5rem; margin-bottom: var(--sp-2); }
+.hadal-body { color: var(--text-body-dark); font-size: var(--fs-small); margin-bottom: var(--sp-4); }
+.hadal-readout {
+  display: grid;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--text-muted-dark);
+}
+/* 两列网格而非 space-between：数值列右对齐且各行对齐，长值换行不挤压标签 */
+.hadal-readout li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--sp-4);
+  align-items: baseline;
+}
+.hadal-readout b {
+  color: var(--c-current);
+  font-weight: 500;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- 底部：发现标签 + 图注 + 下滚提示 ---- */
+.stage-foot {
+  display: grid;
+  gap: var(--sp-3);
+}
+.stage-foot-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-5);
+  flex-wrap: wrap;
+}
+.scene-caption {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: rgba(242, 248, 250, 0.66);
+  max-width: 62ch;
+}
+.scroll-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(242, 248, 250, 0.68);
+  white-space: nowrap;
+}
+.scroll-hint::after {
+  content: "";
+  width: 1px;
+  height: 26px;
+  background: linear-gradient(to bottom, var(--c-current), transparent);
+}
+
+/* 窄屏：首屏内容必须在一屏内放下标题、导语、CTA 与发现标签。
+   实测 312×675 时，桌面版排布的文案层高 486 + 底栏 90 + 上留白 106 = 682 > 675，
+   发现标签被挤出视口（见 docs/VERIFICATION.md V-005）。 */
+@media (max-width: 767px) {
+  .stage-inner { padding-block: calc(var(--header-h) + var(--sp-4)) var(--sp-4); }
+  .stage-panel { max-width: none; }
+  .hero-title { font-size: clamp(2.05rem, 10.5vw, 3rem); }
+  .hero-eyebrow { margin-bottom: var(--sp-3); }
+  .hero-lede { font-size: 0.9375rem; margin-bottom: var(--sp-4); }
+  .hero-actions { gap: var(--sp-2); }
+  .hero-actions .btn { min-height: 38px; padding-inline: 0.9rem; font-size: 0.875rem; }
+  .stage-foot { gap: var(--sp-2); }
+  .stage-foot-row { flex-direction: column; align-items: flex-start; }
+  .scroll-hint { display: none; }
+  .hadal-panel { padding: var(--sp-4); }
+  .hadal-title { font-size: 1.25rem; }
+}
+
+/* ===========================================================================
+   科研身份带（方案 §06.1 模块 04：稳定标签，不堆叠易过期数字）
+   =========================================================================== */
+
+.identity-band {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-5);
+}
+.identity-item {
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-dark);
+}
+/* 值可能是 "Observation" 这类长词：窄屏两列时 1.5rem 会横向裁切
+   （312px 实测 150px 内容塞进 126px 盒子）。用 clamp 收缩并允许断行。 */
+.identity-value {
+  font-size: clamp(1.05rem, 3.2vw, 1.5rem);
+  color: var(--c-current);
+  margin-bottom: 0.25rem;
+  overflow-wrap: anywhere;
+}
+.identity-label { font-size: var(--fs-small); color: var(--text-muted-dark); }
+
+@media (max-width: 767px) {
+  .identity-band { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sp-4); }
+}

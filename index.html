@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>海洋环流观测与数值模拟研究室 · OCOM Lab</title>
+<meta name="description" content="从表层到深渊，追踪海洋流动的结构与机制。深海环流、内潮混合与中尺度动力过程的长期原位观测与数值模拟。">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#031722">
+
+<!-- 社交卡片。方案 §10 SEO 验收项：标题、摘要、结构化数据、站点地图与中英 hreflang。
+     ⚠ 待补：og:image（需研究室提供授权图件）、sitemap.xml、hreflang —— 后三项依赖正式域名。 -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OCOM Lab · 海洋环流观测与数值模拟研究室">
+<meta property="og:title" content="FROM SURFACE TO HADAL · 海洋环流观测与数值模拟研究室">
+<meta property="og:description" content="从表层到深渊，追踪海洋流动的结构与机制。深海环流、内潮混合与中尺度动力过程的长期原位观测与数值模拟。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:locale:alternate" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ResearchOrganization",
+  "name": "海洋环流观测与数值模拟研究室",
+  "alternateName": "Ocean Circulation Observation & Modeling Laboratory",
+  "foundingDate": "2014",
+  "parentOrganization": {
+    "@type": "ResearchOrganization",
+    "name": "中国科学院深海科学与工程研究所"
+  },
+  "knowsAbout": ["深渊环流", "内潮与垂向混合", "深层海盆与中尺度过程", "海洋观测系统"]
+}
+</script>
+
+<link rel="stylesheet" href="./src/styles/main.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23031722'/%3E%3Cpath d='M8 8 L16 26 L28 6' fill='none' stroke='%2321C7D3' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-copy="ui.skip">跳到主要内容</a>
+
+<!-- ADR-005：占位内容必须可见标注 -->
+<p class="demo-ribbon" id="demo-ribbon">演示原型 · 人员、论文、DOI、联系方式均为占位，海沟地形与流场为示意模型</p>
+
+<noscript>
+  <p class="noscript-note" data-copy="ui.noscript">
+    脚本未启用。首屏动态场景、检索与筛选不可用，但下列全部文字内容、栏目结构与链接仍可正常阅读与导航。
+  </p>
+</noscript>
+
+<header class="site-header" id="site-header" data-theme="dark">
+  <a class="brand" href="#top" aria-label="OCOM Lab 首页">
+    <!-- 方案 §03 Logo 构成：V 形深海沟等深线 + 三条穿越流线 + 垂直刻度轴，线性矢量 -->
+    <svg class="brand-mark" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true" focusable="false">
+      <line x1="3.5" y1="4" x2="3.5" y2="28"/>
+      <line x1="3.5" y1="9" x2="6.5" y2="9"/>
+      <line x1="3.5" y1="16" x2="6.5" y2="16"/>
+      <line x1="3.5" y1="23" x2="6.5" y2="23"/>
+      <path d="M9 6 L17.5 27.5 L29 4" stroke-opacity="0.4"/>
+      <path d="M12.5 6 L17.5 21 L25.5 4" stroke-opacity="0.75"/>
+      <path d="M9 11 C13 10, 22 12, 29 10" stroke="#21C7D3"/>
+      <path d="M10.5 16.5 C14 16, 22 17.5, 29 15.5" stroke="#21C7D3" stroke-opacity="0.7"/>
+      <path d="M13.5 22 C15.5 21.5, 22 23, 29 21" stroke="#21C7D3" stroke-opacity="0.45"/>
+    </svg>
+    <span class="brand-text">
+      <span class="brand-short">OCOM LAB</span>
+      <span class="brand-full" id="brand-name">海洋环流观测与数值模拟研究室</span>
+    </span>
+  </a>
+
+  <nav class="primary-nav" id="primary-nav" aria-label="主导航"></nav>
+
+  <div class="header-actions">
+    <button type="button" class="icon-btn" id="search-open" aria-expanded="false" aria-controls="search-panel" aria-label="全站检索">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg>
+      <span aria-hidden="true">⌘K</span>
+    </button>
+    <button type="button" class="icon-btn" id="lang-toggle" lang="en">EN</button>
+    <button type="button" class="icon-btn menu-btn" id="menu-open" aria-expanded="false" aria-controls="mobile-nav" aria-label="菜单">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><line x1="2" y1="4.5" x2="14" y2="4.5"/><line x1="2" y1="11.5" x2="14" y2="11.5"/></svg>
+    </button>
+  </div>
+</header>
+
+<nav class="nav-rail" id="nav-rail" data-theme="dark" aria-label="版块导航"></nav>
+
+<main id="main">
+
+<!-- ═══ 01 首屏舞台：滚动即下潜（ADR-004）═══ -->
+<section class="scene-stage" id="stage" data-theme="dark" aria-labelledby="hero-title">
+  <div class="scene-sticky">
+    <canvas id="trench-canvas" aria-hidden="true"></canvas>
+    <div class="scene-scrim" aria-hidden="true"></div>
+
+    <div class="stage-content">
+     <div class="container stage-inner">
+      <div>
+        <div class="stage-panel" data-panel="hero">
+          <p class="hero-eyebrow" data-copy="hero.eyebrow">中国科学院深海科学与工程研究所 · 成立于 2014 年</p>
+          <p class="hero-concept">DEPTH / FLOW / EVIDENCE</p>
+          <h1 class="hero-title" id="hero-title">FROM SURFACE<br>TO HADAL</h1>
+          <p class="hero-lede" data-copy="hero.lede">
+            从表层到深渊，追踪海洋流动的结构与机制。通过长期原位观测、深海潜标与数值模型，
+            研究深海环流、内潮混合与中尺度动力过程。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#research"><span data-copy="hero.action.research">探索研究方向</span> <span class="arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn-ghost" href="#discovery"><span data-copy="hero.action.discovery">查看代表性成果</span> <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+
+        <div class="stage-panel hadal-panel" data-panel="hadal" aria-hidden="true">
+          <p class="eyebrow" data-copy="hadal.eyebrow">HADAL ZONE · 深渊带</p>
+          <h2 class="hadal-title" data-copy="hadal.title">万米之下的三层环流</h2>
+          <p class="hadal-body" data-copy="hadal.body">
+            背景断面为横穿马里亚纳海沟的示意剖面，长 240 km。粒子按三层环流速度场平流，
+            颜色对应各层，越过海底即被地形遮挡。
+          </p>
+          <ul class="hadal-readout" id="hadal-readout"></ul>
+        </div>
+      </div>
+
+      <div class="stage-foot">
+        <div class="scene-tabs" id="discovery-tabs" role="group" aria-label="发现标签"></div>
+        <div class="stage-foot-row">
+          <p class="scene-caption" id="scene-caption"></p>
+          <p class="scroll-hint" data-copy="hero.scroll">向下滚动即下潜</p>
+        </div>
+      </div>
+     </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 02 科研身份带 ═══ -->
+<section class="band band-dark" id="identity" data-theme="dark" aria-label="科研身份">
+  <div class="container">
+    <div class="identity-band" id="identity-band"></div>
+  </div>
+</section>
+
+<!-- ═══ 03 代表性发现 ═══ -->
+<section class="band" id="discovery" data-theme="light" aria-labelledby="discovery-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.discovery.eyebrow">Selected discovery</p>
+      <h2 id="discovery-h" data-copy="sec.discovery.title">代表性发现</h2>
+      <p class="section-lede" data-copy="sec.discovery.lede">
+        左侧为海沟轴部的纬向流速垂向剖面，可用指针或方向键读取任意深度的流速与离散度；
+        右侧给出对应的科学问题、观测方法、关键发现，以及通往论文、站位与航次的入口。
+      </p>
+    </div>
+    <div class="split">
+      <div class="discovery-figure" id="discovery-figure" data-reveal></div>
+      <div class="discovery-body" id="discovery-body" data-reveal></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 04 研究方向 ═══ -->
+<section class="band" id="research" data-theme="light" aria-labelledby="research-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.research.eyebrow">Research</p>
+      <h2 id="research-h" data-copy="sec.research.title">四个研究方向</h2>
+      <p class="section-lede" data-copy="sec.research.lede">
+        深海与深渊环流、内潮与垂向混合、深层海盆与中尺度过程、海洋观测系统。
+        每个方向都对应一组可追溯的证据：观测站位、航次、数据与论文。
+      </p>
+    </div>
+    <div class="grid grid-4" id="research-cards"></div>
+  </div>
+</section>
+
+<!-- ═══ 05 科研流程 ═══ -->
+<section class="band band-dark" id="workflow" data-theme="dark" aria-labelledby="workflow-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.workflow.eyebrow">Observe → Data → Model → Explain → Outputs</p>
+      <h2 id="workflow-h" data-copy="sec.workflow.title">从观测到解释</h2>
+      <p class="section-lede" data-copy="sec.workflow.lede">
+        这条主轴同时是全站内容的关联方式：每篇论文至少关联一个研究方向，
+        代表性论文进一步关联观测海域、航次、数据、模型与参与成员。
+      </p>
+    </div>
+    <ol class="workflow-rail" id="workflow-rail"></ol>
+  </div>
+</section>
+
+<!-- ═══ 06 观测与航次 ═══ -->
+<section class="band band-dark" id="expeditions" data-theme="dark" aria-labelledby="expeditions-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.expeditions.eyebrow">Expeditions &amp; observing</p>
+      <h2 id="expeditions-h" data-copy="sec.expeditions.title">观测与航次</h2>
+      <p class="section-lede" data-copy="sec.expeditions.lede">
+        观测航次是本站相对通用实验室模板最重要的新增资产。选择地图上的站位，
+        右侧航次列表会高亮相关条目；窄屏下地图自动替换为重点站位列表。
+      </p>
+    </div>
+    <div class="expedition-layout">
+      <div id="station-map" data-reveal></div>
+      <div id="expedition-list" data-reveal></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 07 科研成果 ═══ -->
+<section class="band" id="publications" data-theme="light" aria-labelledby="publications-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.publications.eyebrow">Publications</p>
+      <h2 id="publications-h" data-copy="sec.publications.title">科研成果</h2>
+      <p class="section-lede" data-copy="sec.publications.lede">
+        论文按年份、研究方向与海域筛选。每条给出一句话结论与结构性视觉摘要，
+        而不是仅有题录。正式 DOI、摘要图与开放状态须在上线前补齐并核验。
+      </p>
+    </div>
+    <div class="publication-toolbar">
+      <div id="publication-filters"></div>
+      <p id="publication-count"></p>
+    </div>
+    <div id="publication-list"></div>
+  </div>
+</section>
+
+<!-- ═══ 08 团队成员 ═══ -->
+<section class="band" id="people" data-theme="light" aria-labelledby="people-h">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <p class="eyebrow" data-copy="sec.people.eyebrow">People &amp; news</p>
+      <h2 id="people-h" data-copy="sec.people.title">团队与动态</h2>
+      <p class="section-lede" data-copy="sec.people.lede">
+        成员信息、肖像、联系方式与论文归属须由研究室提供并在上线前逐项核验，
+        因此此处全部为角色占位，头像使用程序生成的字母标记，不使用任何人像。
+      </p>
+    </div>
+    <div id="people-grid"></div>
+    <ul class="news-list" id="news-list"></ul>
+  </div>
+</section>
+
+<!-- ═══ 09 加入我们 ═══ -->
+<section class="band band-dark" id="join" data-theme="dark" aria-labelledby="join-h">
+  <div class="container">
+    <div class="join-layout">
+      <div class="section-head" data-reveal>
+        <p class="eyebrow" data-copy="sec.join.eyebrow">Join us</p>
+        <h2 id="join-h" data-copy="sec.join.title">加入我们</h2>
+      </div>
+      <div id="join-body" data-reveal></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-row">
+      <p data-copy="footer.org">海洋环流观测与数值模拟研究室 · 中国科学院深海科学与工程研究所</p>
+      <p class="mono" data-copy="footer.meta">资料快照日期 2026-08-19 · 网站设计方案 v1.0 首页体验原型</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ 浮层 ═══ -->
+<div class="overlay" id="mobile-nav" hidden role="dialog" aria-modal="true" aria-label="菜单">
+  <div class="overlay-head">
+    <p class="overlay-title">OCOM LAB</p>
+    <button type="button" class="icon-btn" id="mobile-nav-close" aria-label="关闭" data-copy="ui.close">关闭</button>
+  </div>
+  <div class="overlay-body" id="mobile-nav-body"></div>
+</div>
+
+<div class="overlay" id="search-panel" hidden role="dialog" aria-modal="true" aria-label="全站检索">
+  <div class="overlay-head">
+    <p class="overlay-title">Search</p>
+    <button type="button" class="icon-btn" id="search-close" aria-label="关闭">Esc</button>
+  </div>
+  <div class="overlay-body">
+    <div class="search-field">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><line x1="10.5" y1="10.5" x2="14.5" y2="14.5"/></svg>
+      <input type="search" id="search-input" autocomplete="off" spellcheck="false">
+    </div>
+    <p id="search-hint"></p>
+    <div class="search-results" id="search-results"></div>
+  </div>
+</div>
+
+<script type="module" src="./src/js/main.js"></script>
+</body>
+</html>

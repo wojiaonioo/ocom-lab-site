@@ -1,0 +1,59 @@
+/* ===========================================================================
+   版块序号侧栏（桌面）
+   活动态用三个静态通道表达：序号颜色 + 标签不透明度 + 引导线长度。
+   =========================================================================== */
+
+.nav-rail {
+  position: fixed;
+  top: 50%;
+  left: max(1rem, calc((100vw - var(--container)) / 2 + 1rem));
+  transform: translateY(-50%);
+  z-index: var(--z-rail);
+  display: none;
+  color: var(--text-strong-dark);
+  transition: color var(--dur-base) var(--ease-out);
+}
+.nav-rail[data-theme="light"] { color: var(--text-strong); }
+
+@media (min-width: 1180px) {
+  .nav-rail { display: block; }
+}
+
+.rail-list { display: grid; gap: 0.55rem; }
+
+.rail-item {
+  display: grid;
+  grid-template-columns: auto 1.25rem auto;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0;
+}
+
+.rail-num {
+  font-size: 0.6875rem;
+  opacity: 0.45;
+  transition: opacity var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+
+.rail-line {
+  height: 1px;
+  width: 0.75rem;
+  justify-self: start;
+  background: currentColor;
+  opacity: 0.25;
+  transition: width var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+.rail-label {
+  font-size: 0.75rem;
+  opacity: 0.4;
+  white-space: nowrap;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.rail-item:hover .rail-label,
+.rail-item:focus-visible .rail-label { opacity: 0.75; }
+
+.rail-item.is-active .rail-num { opacity: 1; color: var(--c-current); }
+.rail-item.is-active .rail-line { width: 1.25rem; opacity: 0.85; }
+.rail-item.is-active .rail-label { opacity: 1; font-weight: 600; }

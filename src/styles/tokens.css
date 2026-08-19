@@ -1,0 +1,145 @@
+/* ===========================================================================
+   设计令牌 —— 色彩 / 字体 / 间距 / 圆角 / 层级的**唯一来源**
+   色值取自方案 v1.0 §04 视觉系统色彩令牌表。
+   scenes/palette.js 在运行时读取这里的自定义属性，因此 canvas 与 DOM 永不失步。
+   =========================================================================== */
+
+:root {
+  /* ---- 方案 §04 七个基准令牌 ---- */
+  --c-abyss: #031722;        /* Abyss Black    深色首屏、页脚、深渊背景 */
+  --c-trench: #063b52;       /* Trench Blue    导航、标题、研究栏目主色 */
+  --c-current: #21c7d3;      /* Current Cyan   流线、链接、交互状态 */
+  --c-observation: #3d8fb5;  /* Observation Blue 观测、仪器、航次内容 */
+  --c-foam: #f2f8fa;         /* Foam White     浅色页面背景 */
+  --c-sediment: #d7c6a5;     /* Sediment Sand  地形、历史资料、辅助色 */
+  --c-coral: #ff7866;        /* Thermal Coral  温度异常、重点成果、警示 */
+
+  /* ---- 水柱渐变的派生色（仅供 water-column 图层，不用于 UI）---- */
+  --c-surface: #0d5a74;
+  --c-midwater: #062c3f;
+  --c-ink: #0a1b24;
+
+  /* ---- 文字（浅色版块）----
+     数值经 WCAG 对比度实测选定，全部 ≥ 4.5:1（方案 §09 无障碍基线）。
+     括号内为对 --surface-page #F2F8FA 的对比度。 */
+  --text-strong: #06212e; /* 15.9 */
+  --text-body: #24404c;   /* 10.2 */
+  --text-muted: #4a6472;  /*  5.8 —— 原 #5F7783 仅 4.4，不达标 */
+  --text-faint: #55707c;  /*  4.9 —— 原 #90A5AE 仅 2.4，严重不达标 */
+
+  /* ---- 文字（深色版块）----
+     括号内为对 --surface-dark-raised #08283A（较浅的那个深色面）的对比度，
+     取较严格的一侧，保证在深色卡片上同样达标。 */
+  --text-strong-dark: #f2f8fa; /* 15.1 */
+  --text-body-dark: #cfe0e7;   /* 11.0 */
+  --text-muted-dark: #a8c3ce;  /*  8.3 */
+  --text-faint-dark: #8aa6b3;  /*  6.0 —— 原 #6B8794 在深色卡片上仅 4.0 */
+
+  /* ---- 品牌色的"文字用"变体 ----
+     方案 §04 的七个色彩令牌是**品牌资产，不得改动**；
+     但 Observation Blue #3D8FB5 作为浅底上的正文色只有 3.4:1。
+     因此另立 ink 变体专供浅底文字，图形与场景仍用原色。 */
+  --c-observation-ink: #2a6e8e; /* 5.3 on #F2F8FA */
+  --c-coral-ink: #b83a26;       /* 5.3 on #F2F8FA / 5.7 on #FFF —— 原 #FF7866 仅 2.4 */
+
+  /* ---- 面 ---- */
+  --surface-page: var(--c-foam);
+  --surface-card: #ffffff;
+  --surface-sunken: #e7eff2;
+  --surface-dark: var(--c-abyss);
+  --surface-dark-raised: #08283a;
+
+  --line: #d3e0e5;
+  --line-strong: #b6cbd3;
+  --line-dark: rgba(242, 248, 250, 0.14);
+  --line-dark-strong: rgba(242, 248, 250, 0.28);
+
+  /* ---- 字体（方案 §04 排版规范）----
+     中文标题 思源黑体 / 英文标题 IBM Plex Sans / 参数与坐标 IBM Plex Mono
+     全部带系统回退，不依赖网络字体（离线演示与研究所内网部署）。 */
+  --font-sans: "IBM Plex Sans", "Source Han Sans SC", "Noto Sans CJK SC", "PingFang SC",
+    "Microsoft YaHei", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+    "Liberation Mono", monospace;
+
+  /* 正文 16–18px、行高 1.6–1.75（方案 §04） */
+  --fs-body: 1.0625rem;   /* 17px */
+  --fs-small: 0.9375rem;  /* 15px */
+  --fs-mono: 0.8125rem;   /* 13px */
+  --fs-eyebrow: 0.75rem;
+  --lh-body: 1.7;
+  --lh-tight: 1.22;
+
+  --fs-h1: clamp(2.6rem, 6.4vw, 5.2rem);
+  --fs-h2: clamp(1.75rem, 3.2vw, 2.75rem);
+  --fs-h3: clamp(1.125rem, 1.6vw, 1.4rem);
+
+  /* ---- 间距 ---- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+  --sp-8: 4.5rem;
+  --sp-9: 6.5rem;
+
+  /* ---- 圆角：方案 §04「卡片圆角控制在 4–8px」---- */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+
+  /* ---- 弱阴影 + 细描边（方案 §04：避免消费互联网卡片感）---- */
+  --shadow-card: 0 1px 2px rgba(6, 33, 46, 0.05), 0 8px 24px -18px rgba(6, 33, 46, 0.4);
+
+  /* ---- 布局 ---- */
+  --container: 1320px;      /* 方案 §09：最大宽度 1280–1360 */
+  --container-narrow: 980px;
+  --header-h: 58px;         /* 参考 skill：桌面页头 50–60px */
+  --rail-w: 148px;
+  --gutter: clamp(1.25rem, 4vw, 3.5rem);
+
+  --z-scene: 0;
+  --z-rail: 30;
+  --z-header: 40;
+  --z-overlay: 60;
+
+  /* ---- 动效：方案 §08「克制动态」---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 140ms;
+  --dur-base: 260ms;
+  --dur-slow: 520ms;
+}
+
+/* ---------------------------------------------------------------------------
+   主题语义别名。组件写 var(--fg-strong) 即可，不必到处判断主题。
+
+   **只认 `data-theme`，不认 `.band` / `.band-dark`。**
+   深色版块的元素同时带 class="band band-dark" 与 data-theme="dark"；
+   若这里也按 class 定义令牌，`.band`（浅色）与 `.band-dark`（深色）特异性相同，
+   后写的 `.band` 获胜 —— 深色版块的标题会拿到近黑色，压在深色底上等于隐形。
+   该 bug 在浏览器验证中复现，见 docs/VERIFICATION.md V-003。
+   class 只负责背景与视觉，主题令牌只由 data-theme 决定，职责不重叠。
+   --------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  --fg-strong: var(--text-strong-dark);
+  --fg-body: var(--text-body-dark);
+  --fg-muted: var(--text-muted-dark);
+  --fg-faint: var(--text-faint-dark);
+  --bd: var(--line-dark);
+  --bd-strong: var(--line-dark-strong);
+  --bg: var(--surface-dark);
+  --bg-raised: var(--surface-dark-raised);
+}
+
+[data-theme="light"] {
+  --fg-strong: var(--text-strong);
+  --fg-body: var(--text-body);
+  --fg-muted: var(--text-muted);
+  --fg-faint: var(--text-faint);
+  --bd: var(--line);
+  --bd-strong: var(--line-strong);
+  --bg: var(--surface-page);
+  --bg-raised: var(--surface-card);
+}

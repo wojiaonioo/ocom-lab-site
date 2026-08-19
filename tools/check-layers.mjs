@@ -32,7 +32,8 @@ const ALLOW = {
   i18n: ['core'],
   figures: ['core', 'science', 'content', 'i18n'],
   scenes: ['core', 'science', 'i18n'],
-  ui: ['core', 'content', 'i18n', 'figures'],
+  // ui → science 是**向下**依赖（L3 → L0），仅用于 science/format.js 的单位写法统一。见 ADR-007。
+  ui: ['core', 'science', 'content', 'i18n', 'figures'],
   main: ['core', 'science', 'content', 'i18n', 'figures', 'scenes', 'ui'],
 };
 

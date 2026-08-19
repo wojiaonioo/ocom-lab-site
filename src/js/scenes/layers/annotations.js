@@ -33,31 +33,43 @@ export function createAnnotations() {
         ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
 
+        // 标签允许偏离其所指深度，用引线补回对应关系。
+        // 上层环流核心在 350 m，直接按深度定位会被顶部坐标轴与页头裁掉
+        // （首次浏览器验证时该标签整条缺失，见 docs/VERIFICATION.md V-003）。
+        const TOP_LIMIT = 132;
+        const BOTTOM_LIMIT = h - 34;
+
         for (const layer of LAYERS) {
           const y = frame.sy(layer.center);
-          if (y < 96 || y > h - 30) continue;
+          if (y < -40 || y > h + 40) continue;
+          const labelY = Math.max(TOP_LIMIT, Math.min(y, BOTTOM_LIMIT));
           const tone = color[TONE[layer.id]] || color.current;
 
-          // 指示线：把标签和它描述的水层绑在一起，避免"这行字说的是哪一层"的歧义
+          // 引线：从标签指向该水层的真实深度，避免"这行字说的是哪一层"的歧义
           ctx.strokeStyle = rgba(tone, 0.4);
           ctx.lineWidth = 1;
           ctx.setLineDash([2, 3]);
           ctx.beginPath();
-          ctx.moveTo(rightEdge + 6, y);
+          ctx.moveTo(rightEdge + 6, labelY);
           ctx.lineTo(rightEdge + 26, y);
+          ctx.stroke();
+          // 真实深度处画一小段横标，说明引线端点不是随手画的
+          ctx.beginPath();
+          ctx.moveTo(rightEdge + 26, y);
+          ctx.lineTo(rightEdge + 40, y);
           ctx.stroke();
           ctx.setLineDash([]);
 
           ctx.font = `600 12px ${frame.font.sans}`;
           ctx.fillStyle = rgba(tone, 0.95);
-          ctx.fillText(`${frame.t(layer.label)} · ${frame.t(layer.direction)}`, rightEdge, y - 8);
+          ctx.fillText(`${frame.t(layer.label)} · ${frame.t(layer.direction)}`, rightEdge, labelY - 8);
 
           ctx.font = `500 11px ${frame.font.mono}`;
           ctx.fillStyle = rgba(color.foam, 0.55);
           ctx.fillText(
             `${formatSpeed(layer.uCore)} · ${speedDirection(layer.uCore, 'en')} · ${layer.center.toLocaleString('en-US')} m`,
             rightEdge,
-            y + 9,
+            labelY + 9,
           );
         }
       }

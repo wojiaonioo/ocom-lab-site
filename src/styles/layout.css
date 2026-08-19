@@ -1,0 +1,124 @@
+/* ===========================================================================
+   布局骨架：全幅 band + 约束容器 + sticky 舞台
+   方案 §09 响应式：桌面 ≥1280 十二列（最大宽 1280–1360）；
+   平板 768–1279 弹性双栏；手机 <768 单列、16–20px 边距。
+   =========================================================================== */
+
+.band {
+  position: relative;
+  background: var(--surface-page);
+  color: var(--text-body);
+  padding-block: var(--sp-8);
+}
+.band-dark {
+  background: var(--surface-dark);
+  color: var(--text-body-dark);
+}
+.band + .band { border-top: 1px solid var(--bd); }
+.band-dark + .band-dark { border-top-color: var(--line-dark); }
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+.container-narrow { max-width: var(--container-narrow); }
+
+/* 桌面上给左侧序号侧栏让位 */
+@media (min-width: 1180px) {
+  .container { padding-left: calc(var(--gutter) + var(--rail-w)); }
+}
+
+/* ---- 版块抬头 ---- */
+.section-head {
+  display: grid;
+  gap: var(--sp-3);
+  max-width: 62ch;
+  margin-bottom: var(--sp-7);
+}
+.section-head .eyebrow { margin-bottom: 0; }
+.section-lede {
+  color: var(--fg-muted, var(--text-muted));
+  font-size: 1.0625rem;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-eyebrow);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-muted, var(--text-muted));
+}
+
+/* ---- 网格 ---- */
+.grid { display: grid; gap: var(--sp-5); }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+@media (max-width: 1179px) {
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: minmax(0, 1fr); }
+  .band { padding-block: var(--sp-7); }
+  :root { --gutter: 1.125rem; }
+}
+
+/* ---- 双栏（图 + 文）---- */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  gap: clamp(var(--sp-5), 4vw, var(--sp-8));
+  align-items: start;
+}
+@media (max-width: 1023px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ===========================================================================
+   sticky 舞台（ADR-004 滚动下潜）
+   =========================================================================== */
+
+.scene-stage {
+  position: relative;
+  height: 200vh;
+  background: var(--c-abyss);
+}
+.scene-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+#trench-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* 左侧压暗：保证首屏文案在流场之上仍达到对比度要求（方案 §09） */
+.scene-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(100deg, rgba(3, 23, 34, 0.9) 0%, rgba(3, 23, 34, 0.62) 34%, rgba(3, 23, 34, 0) 62%),
+    linear-gradient(to bottom, rgba(3, 23, 34, 0.72) 0%, rgba(3, 23, 34, 0) 22%);
+}
+
+@media (max-width: 767px) {
+  /* 方案 §09：手机端压缩滑动成本 */
+  .scene-stage { height: 150vh; }
+  .scene-scrim {
+    background: linear-gradient(to bottom, rgba(3, 23, 34, 0.86) 0%, rgba(3, 23, 34, 0.32) 42%, rgba(3, 23, 34, 0.78) 100%);
+  }
+}
+
+/* 无 Canvas 时的第三层降级：纯色背景 + 内容照常可读 */
+.no-canvas .scene-stage { height: auto; }
+.no-canvas .scene-sticky { position: static; height: auto; padding-block: var(--sp-8); }
+.no-canvas .scene-scrim { display: none; }

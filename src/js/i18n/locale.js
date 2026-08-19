@@ -15,7 +15,16 @@ const SUPPORTED = ['zh', 'en'];
 
 let current = 'zh';
 
-/** 初始语言：本地存储 > 浏览器偏好 > 中文。 */
+/**
+ * 初始语言：本地存储 > 中文。
+ *
+ * **不读 navigator.language**：这是中科院研究所的主站，中文是第一语言，
+ * 英文是并行版本而非回退版本。按浏览器偏好自动切成英文会让中文访客
+ * 首次进站就看到英文，与机构对外口径不符。
+ *
+ * 正式站应按方案 §10 用 hreflang + 独立 URL 提供中英两套路径，
+ * 由服务端按路径决定语言，而不是靠客户端探测（ADR-008）。
+ */
 function detect() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -23,8 +32,7 @@ function detect() {
   } catch {
     /* 隐私模式下 localStorage 可能抛错，忽略 */
   }
-  const nav = (navigator.language || 'zh').toLowerCase();
-  return nav.startsWith('zh') ? 'zh' : 'en';
+  return 'zh';
 }
 
 export const getLocale = () => current;

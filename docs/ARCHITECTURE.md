@@ -11,7 +11,7 @@
 ```
 level 4   main.js                组合根：唯一装配处，允许 import 全部
              │
-level 3   ui/                    交互组件（DOM）        ← core content i18n figures
+level 3   ui/                    交互组件（DOM）        ← core science content i18n figures
              │
 level 2   scenes/  figures/      渲染层（Canvas / SVG） ← core science content i18n
              │
@@ -69,13 +69,15 @@ site/
     └── js/
         ├── main.js              # 组合根
         ├── core/                # bus env raf scroll dom
-        ├── science/             # bathymetry flow-field profile projection
+        ├── science/             # math bathymetry flow-field profile projection format
         ├── content/             # schema site research expeditions publications people index
         ├── i18n/                # locale strings
-        ├── scenes/              # scene-contract trench-scene fallback + layers/
+        ├── scenes/              # scene-contract palette trench-scene
+        │   └── layers/          # water-column isobaths tidal-beams streamlines
+        │                        # particles terrain moorings annotations depth-axis
         ├── figures/             # velocity-profile station-map visual-abstract
-        └── ui/                  # header nav-rail mobile-nav search lang-toggle
-                                 # theme-watch discovery-tabs pub-filter reveal
+        └── ui/                  # header nav-rail overlays discovery research
+                                 # expeditions publications people reveal
 ```
 
 CSS 同样分层：`tokens → base → layout → components → sections`，后者可用前者的变量，反之不行。
@@ -88,12 +90,17 @@ CSS 同样分层：`tokens → base → layout → components → sections`，�
 
 | 事件 | 发布者 | 订阅者 | 载荷 |
 |---|---|---|---|
-| `locale:change` | `ui/lang-toggle` | 所有渲染层 | `'zh' \| 'en'` |
+| `locale:change` | `i18n/locale`（由 `ui/header` 触发） | 所有渲染层 | `'zh' \| 'en'` |
 | `stage:progress` | `core/scroll` | `scenes/trench-scene` | `0..1` |
-| `scene:state` | `ui/discovery-tabs` | `scenes/trench-scene` | `'circulation' \| 'tides' \| 'moorings'` |
+| `scene:state` | `ui/discovery` | `scenes/trench-scene` | `'circulation' \| 'tides' \| 'moorings'` |
 | `section:active` | `core/scroll` | `ui/nav-rail` `ui/header` | `{id, theme}` |
 | `quality:change` | `core/raf` | `scenes/*` | `'high' \| 'medium' \| 'low'` |
 | `motion:change` | `core/env` | `scenes/*` `ui/reveal` | `boolean` |
+
+订阅方普遍使用 `on(EVENT.X, render, { replay: true })`：
+总线保留每个事件的最后一次载荷，晚挂载的模块立即用当前状态渲染一次。
+这消除了"各模块自己缓存一份初始状态"的重复，也让 `main.js` 的启动顺序只需保证
+**状态源先于消费者**，而不必精确编排每一次渲染。
 
 **规则**：事件名在 `core/bus.js` 里集中声明为常量，禁止裸字符串。
 新增事件必须同时更新本表——这张表就是跨层契约。

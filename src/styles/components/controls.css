@@ -1,0 +1,145 @@
+/* ===========================================================================
+   交互控件：按钮、筛选 chip、标签、场景标签页
+   方案 §04 强调色规则：Thermal Coral 仅用于异常值、重要成果和关键按钮，
+   单页可视区域占比应低于 8%；Current Cyan 用于交互与流动线索，不做大面积荧光。
+   =========================================================================== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 42px;
+  padding: 0 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.btn-primary {
+  background: var(--c-current);
+  color: var(--c-abyss);
+  font-weight: 600;
+}
+.btn-primary:hover { background: #3ad6e1; }
+.btn-ghost {
+  border-color: rgba(242, 248, 250, 0.34);
+  color: var(--text-strong-dark);
+}
+.btn-ghost:hover { border-color: var(--c-current); color: var(--c-current); }
+.btn .arrow { transition: transform var(--dur-fast) var(--ease-out); }
+.btn:hover .arrow { transform: translateX(3px); }
+
+/* ---- 筛选 chip ---- */
+.filter-group { display: grid; gap: var(--sp-2); }
+.filter-label { color: var(--fg-faint, var(--text-faint)); }
+.chip-row { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+.chip {
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--bd, var(--line));
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fg-muted, var(--text-muted));
+  font-size: 0.8125rem;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.chip:hover { border-color: var(--c-observation); color: var(--fg-strong, var(--text-strong)); }
+.chip.is-active {
+  background: var(--c-trench);
+  border-color: var(--c-trench);
+  color: var(--c-foam);
+}
+/* 占位标记。Thermal Coral 原色在浅底上仅 2.4:1，浅底用 ink 变体、深底用原色。 */
+[data-theme="dark"] .chip-warn { color: var(--c-coral); }
+
+.chip-warn {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.4rem;
+  border-color: currentColor;
+  color: var(--c-coral-ink);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+}
+
+/* ---- 标签 ---- */
+.tag-row { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.tag {
+  padding: 0.12rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(61, 143, 181, 0.13);
+  color: var(--c-trench);
+  font-size: 0.75rem;
+}
+.band-dark .tag { background: rgba(61, 143, 181, 0.22); color: #a9d5e8; }
+.tag-muted { background: transparent; border: 1px solid var(--bd, var(--line)); color: var(--fg-muted, var(--text-muted)); }
+
+/* ---- 首屏发现标签（方案 §06.1 模块 03：用户主动切换）---- */
+.scene-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.scene-tab {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgba(242, 248, 250, 0.24);
+  border-radius: var(--radius-sm);
+  background: rgba(3, 23, 34, 0.42);
+  backdrop-filter: blur(6px);
+  text-align: left;
+  color: var(--text-body-dark);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out);
+}
+.scene-tab:hover { border-color: var(--c-current); }
+.scene-tab.is-active {
+  border-color: var(--c-current);
+  background: rgba(33, 199, 211, 0.16);
+  color: var(--text-strong-dark);
+}
+.scene-tab-label { font-size: 0.875rem; font-weight: 600; }
+.scene-tab-caption {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  opacity: 0.62;
+  max-width: 26ch;
+}
+@media (max-width: 767px) {
+  .scene-tab-caption { display: none; }
+  .scene-tab { padding: 0.45rem 0.7rem; }
+}
+
+/* ---- 关联链接组 ---- */
+.discovery-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--bd, var(--line));
+}
+.link-group-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 500;
+  color: var(--fg-faint, var(--text-faint));
+  margin-bottom: 0.3rem;
+}
+.link-group li { margin-bottom: 0.25rem; }
+.link-group a {
+  font-size: var(--fs-small);
+  color: var(--c-trench);
+  border-bottom: 1px solid transparent;
+}
+/* Current Cyan 在雾白底上仅约 2:1，浅底 hover 改用 ink 变体 */
+.link-group a:hover { color: var(--c-observation-ink); border-bottom-color: currentColor; }
+.link-group-more { color: var(--fg-faint, var(--text-faint)); margin-top: 0.3rem; }

@@ -35,16 +35,19 @@ export function createTerrain() {
       ctx.lineTo(0, h + 2);
       ctx.closePath();
 
+      // 岩体必须明显区别于水体：偏暖的板岩色。
+      // 首次验证时岩体取的是深蓝系，采样得到 [6,25,36] 对水体 [5,40,58]，
+      // 两者仅在蓝通道有差，海沟轮廓在画面上读不出来（见 docs/VERIFICATION.md V-003）。
       const body = ctx.createLinearGradient(0, 0, 0, h);
-      body.addColorStop(0, mixColor(color.abyss, color.trench, 0.32));
-      body.addColorStop(1, mixColor(color.abyss, color.ink, 0.6));
+      body.addColorStop(0, mixColor(color.abyss, color.sediment, 0.27));
+      body.addColorStop(1, mixColor(color.abyss, color.sediment, 0.11));
       ctx.fillStyle = body;
       ctx.fill();
 
       // 沉积层理：裁在地形内部，表达"这是沉积物不是黑色色块"
       ctx.clip();
       ctx.lineWidth = 1;
-      ctx.strokeStyle = rgba(color.sediment, 0.05);
+      ctx.strokeStyle = rgba(color.sediment, 0.09);
       for (let k = 1; k <= 7; k += 1) {
         ctx.beginPath();
         for (let i = 0; i < n; i += 1) {

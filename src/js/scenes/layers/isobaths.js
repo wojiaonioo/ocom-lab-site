@@ -43,7 +43,7 @@ export function createIsobaths() {
         if (y < -1 || y > h + 1) continue;
         // 千米整数线更实，中间线更虚 —— 让读者不数格子也能定位
         const major = depth % 1000 === 0;
-        ctx.strokeStyle = rgba(color.current, major ? 0.11 : 0.055);
+        ctx.strokeStyle = rgba(color.current, major ? 0.17 : 0.085);
         ctx.setLineDash(major ? [] : [3, 6]);
         ctx.beginPath();
         ctx.moveTo(0, y);

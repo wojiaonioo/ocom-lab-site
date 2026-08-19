@@ -1,0 +1,20 @@
+/* ===========================================================================
+   样式入口 —— 层叠顺序即依赖顺序，后者可用前者的令牌，反之不行。
+   tokens → base → layout → components → sections
+   （零构建步骤，@import 在本地与静态服务器上均可直接工作；
+     若后续接 Astro/Vite，这份顺序原样交给打包器即可。）
+   =========================================================================== */
+
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+
+@import "./components/header.css";
+@import "./components/nav-rail.css";
+@import "./components/card.css";
+@import "./components/controls.css";
+@import "./components/figure.css";
+@import "./components/overlay.css";
+
+@import "./sections/stage.css";
+@import "./sections/sections.css";

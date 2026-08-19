@@ -21,8 +21,12 @@ export const TRANSECT = {
   axisX: 0.5,
   maxDepthM: 10920,
   plainDepthM: 5800,
-  /** 绘图时深度轴的下边界，留出海底以下的余量 */
-  depthScaleM: 11400,
+  /**
+   * 绘图时深度轴的下边界。
+   * 比轴深多留约 900 m 余量：否则海沟 V 尖正好压在画布下边缘，
+   * 首屏最关键的形态特征被裁掉一半（见 docs/VERIFICATION.md V-003）。
+   */
+  depthScaleM: 11800,
 };
 
 const TRENCH_AMP = 5120; // 5800 + 5120 = 10920 m
@@ -46,8 +50,8 @@ export function depthAt(x) {
   let d = TRANSECT.plainDepthM;
   d -= 430 * gauss(x, 0.24, 0.055); // 外缘隆起（板块下弯前的上拱）
   d += TRENCH_AMP * Math.exp(-Math.pow(t, 1.35)); // 海沟 V 形轴部
-  d -= 3700 * smoothstep(0.6, 0.94, x); // 弧前斜坡向岛弧爬升
-  d -= 950 * gauss(x, 0.875, 0.042); // 弧前海山
+  d -= 2400 * smoothstep(0.62, 1.02, x); // 弧前斜坡
+  d -= 700 * gauss(x, 0.82, 0.035); // 弧前高地
   d += roughness(x);
 
   return d;
@@ -80,8 +84,8 @@ export const FEATURES = [
   { id: 'plain', x: 0.13, label: { zh: '西太平洋深海平原', en: 'W. Pacific abyssal plain' } },
   { id: 'outer-rise', x: 0.24, label: { zh: '外缘隆起', en: 'Outer rise' } },
   { id: 'axis', x: 0.5, label: { zh: '海沟轴部', en: 'Trench axis' } },
-  { id: 'forearc', x: 0.72, label: { zh: '弧前斜坡', en: 'Forearc slope' } },
-  { id: 'arc', x: 0.9, label: { zh: '岛弧', en: 'Island arc' } },
+  { id: 'forearc', x: 0.7, label: { zh: '弧前斜坡', en: 'Forearc slope' } },
+  { id: 'high', x: 0.82, label: { zh: '弧前高地', en: 'Forearc high' } },
 ];
 
 /** 横坐标 → 断面距离（km），用于底部距离轴。 */

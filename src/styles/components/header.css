@@ -1,0 +1,152 @@
+/* ===========================================================================
+   顶部导航 + demo 提示条
+   方案 §06.1 模块 01：首屏透明、滚动后转雾白背景。
+   =========================================================================== */
+
+.demo-ribbon {
+  position: relative;
+  z-index: calc(var(--z-header) + 1);
+  padding: 0.4rem var(--gutter);
+  background: var(--c-sediment);
+  color: #3b3223;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  /* 负外边距让页头**覆盖**首屏，而不是在它上方另占一条 58px 的带。
+     没有这一行，浅色页头文字会压在雾白页面底色上，等于隐形。 */
+  margin-bottom: calc(-1 * var(--header-h));
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  height: var(--header-h);
+  padding-inline: var(--gutter);
+  color: var(--text-strong-dark);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.site-header.is-scrolled {
+  background: rgba(242, 248, 250, 0.92);
+  backdrop-filter: blur(14px);
+  border-bottom-color: var(--line);
+  color: var(--text-strong);
+}
+.site-header.is-scrolled[data-theme="dark"] {
+  background: rgba(3, 23, 34, 0.9);
+  border-bottom-color: var(--line-dark);
+  color: var(--text-strong-dark);
+}
+
+/* ---- 品牌 ---- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: 0 0 auto;
+}
+.brand-mark { width: 26px; height: 26px; flex: none; }
+.brand-mark path,
+.brand-mark line { vector-effect: non-scaling-stroke; }
+.brand-text { display: grid; line-height: 1.15; }
+.brand-short {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+.brand-full {
+  font-size: 0.6875rem;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+/* ---- 栏目 ---- */
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-inline: auto;
+}
+.nav-link {
+  position: relative;
+  display: grid;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-sm);
+  line-height: 1.2;
+}
+.nav-link-label { font-size: 0.875rem; }
+.nav-link-ask {
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.nav-link:hover .nav-link-ask,
+.nav-link:focus-visible .nav-link-ask { opacity: 0.6; }
+
+/* 当前栏目：颜色 + 下划线两个静态通道，不只靠动画（参考 skill 红线） */
+.nav-link.is-current { color: var(--c-current); }
+.nav-link.is-current::after {
+  content: "";
+  position: absolute;
+  left: 0.7rem;
+  right: 0.7rem;
+  bottom: 0.1rem;
+  height: 1px;
+  background: currentColor;
+}
+
+/* ---- 右侧动作 ---- */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: 0 0 auto;
+}
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding-inline: 0.65rem;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);   /* 参考 skill：紧凑圆角矩形，约 4px */
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  opacity: 0.78;
+  transition: opacity var(--dur-fast) var(--ease-out), background-color var(--dur-fast) var(--ease-out);
+}
+.icon-btn:hover { opacity: 1; background: rgba(33, 199, 211, 0.12); }
+.icon-btn svg { width: 13px; height: 13px; }
+
+.menu-btn { display: none; }
+
+@media (max-width: 1023px) {
+  .primary-nav { display: none; }
+  .menu-btn { display: inline-flex; }
+  .brand-full { display: none; }
+}
+
+/* 窄屏上提示条会占掉两行、挤压首屏可用高度，收紧字号与行距 */
+@media (max-width: 767px) {
+  .demo-ribbon {
+    padding: 0.3rem var(--sp-4);
+    font-size: 0.6875rem;
+    line-height: 1.35;
+  }
+  .header-actions { gap: 0.35rem; }
+  .icon-btn { height: 30px; padding-inline: 0.5rem; }
+}

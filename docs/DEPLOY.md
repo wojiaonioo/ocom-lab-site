@@ -1,5 +1,9 @@
 # 发布 · DEPLOY
 
+> **当前线上**：https://ocom.114451.xyz　（CF Pages 项目 `ocom-lab-site`，源 `wojiaonioo/ocom-lab-site` 私有仓库）
+> 备用入口 https://ocom-lab-site.pages.dev
+
+
 零构建静态站。**仓库根 ≠ 站点根**：
 
 ```
@@ -104,3 +108,37 @@ git push          # CF Pages 自动构建部署，约 30 秒
 - `public/_headers`：CF Pages 的响应头配置。GitHub Pages 忽略它。
 - `public/_redirects`：只保留"未知路径回首页"。**不要指望用它屏蔽文件**（见上）。
 - 所有资源路径均为相对路径（`./src/...`），因此在子路径（如 `user.github.io/repo/`）下同样可用。
+
+
+---
+
+## 已完成的实际配置（2026-08-19）
+
+| 项 | 值 |
+|---|---|
+| GitHub 仓库 | `wojiaonioo/ocom-lab-site`（**私有**） |
+| CF Pages 项目 | `ocom-lab-site` |
+| 生产分支 | `main`，自动部署已启用 |
+| Build command | 空 |
+| Build output directory | `public` |
+| 自定义域名 | `ocom.114451.xyz`（CNAME → `ocom-lab-site.pages.dev`，Auto TTL） |
+
+⚠ 该 zone 上原有 `*.114451.xyz` 通配符记录。新增的 `ocom` CNAME 对该子域优先生效，
+**通配符记录保留未动**，其他子域不受影响。
+
+### 上线验收实测
+
+```
+站点资源            index.html / main.css / main.js / flow-field.js / station-map.js / robots.txt  全 200
+不应暴露的          CLAUDE.md、tools/、docs/  均已屏蔽（回退首页）
+响应头              x-robots-tag: noindex, nofollow ✓
+浏览器渲染          9 个版块、4 研究方向、8 论文、6 成员、3 航次、6 站位、剖面 SVG 均在
+Canvas              非空率 100%
+控制台              无应用报错
+```
+
+### 一个坑（已在正文说明）
+
+首次验证时 `/CLAUDE.md` 仍返回原文，一度以为屏蔽失败 —— 实为 CF 边缘缓存
+（`cf-cache-status: HIT`）。**判断是否生效要看响应体，不能只看状态码**：
+本站 `_redirects` 有 `/* → /index.html 200` 兜底，未知路径本来就返回 200。

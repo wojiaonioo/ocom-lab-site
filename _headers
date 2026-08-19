@@ -1,0 +1,16 @@
+# Cloudflare Pages 响应头配置
+# 语法参考 CF Pages 的 _headers 文件规范；GitHub Pages 会忽略本文件。
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: SAMEORIGIN
+  # 演示阶段禁止收录，与 robots.txt 双保险
+  X-Robots-Tag: noindex, nofollow
+
+# 源码是内容本身（零构建、无指纹文件名），短缓存以便随时更新
+/src/*
+  Cache-Control: public, max-age=300, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

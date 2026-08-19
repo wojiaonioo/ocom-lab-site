@@ -61,28 +61,51 @@ function layerOf(absPath) {
   return rel.length === 1 ? 'main' : rel[0];
 }
 
-/** 粗剥注释与字符串字面量，降低 DOM 全局检查的误报。 */
-function strip(src) {
+/**
+ * 只剥注释，保留字符串字面量。
+ * import 路径必须从这一版提取 —— 剥掉字符串会把 '../core/dom.js' 清空，
+ * 导致越级检查静默失效（本脚本首次自测就栽在这里，见 docs/VERIFICATION.md）。
+ * 行号也基于这一版计算，剥注释用等长空白替换以保持行结构。
+ */
+function stripComments(src) {
   return src
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/(^|[^:])\/\/[^\n]*/g, '$1 ')
-    .replace(/'(?:\\.|[^'\\])*'/g, "''")
-    .replace(/"(?:\\.|[^"\\])*"/g, '""')
-    .replace(/`(?:\\.|[^`\\])*`/g, '``');
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    .replace(/(^|[^:])\/\/[^\n]*/g, (m, p1) => p1 + ' '.repeat(Math.max(0, m.length - p1.length)));
 }
 
-/** 取出所有本地相对 import（含动态 import），返回 {spec, line}。 */
+/** 在剥注释的基础上再清空字符串字面量，供 DOM 全局与导出风格检查使用。 */
+function blankStrings(src) {
+  return src
+    .replace(/'(?:\\.|[^'\\\n])*'/g, (m) => `'${' '.repeat(Math.max(0, m.length - 2))}'`)
+    .replace(/"(?:\\.|[^"\\\n])*"/g, (m) => `"${' '.repeat(Math.max(0, m.length - 2))}"`)
+    .replace(/`(?:\\.|[^`\\])*`/g, (m) => m.replace(/[^\n]/g, ' '));
+}
+
+/**
+ * 取出所有 import / export-from 的模块说明符，返回 {spec, line}。
+ *
+ * 中段用 tempered greedy token —— `(?:(?!import|export)[^'";])*?` ——
+ * 保证匹配不会跨越下一个 import/export 关键字或语句分号。
+ * 不加这层限制时，文件开头的 `export const …` 会一路吃到后面某个 import 的 from，
+ * 把该 import 误报在错误的行号上（首次自测已复现）。
+ */
 function importsOf(src) {
+  const seen = new Set();
   const found = [];
+  const MIDDLE = String.raw`(?:(?!\b(?:import|export)\b)[^'";])*?`;
   const patterns = [
-    /\bimport\s[\s\S]*?\sfrom\s*['"]([^'"]+)['"]/g,
-    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-    /\bexport\s[\s\S]*?\sfrom\s*['"]([^'"]+)['"]/g,
+    new RegExp(String.raw`\b(?:import|export)\b${MIDDLE}\bfrom\s*['"]([^'"]+)['"]`, 'g'),
+    /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g, // 动态 import
+    /\bimport\s+['"]([^'"]+)['"]/g, // 副作用导入
   ];
   for (const re of patterns) {
     let m;
     while ((m = re.exec(src))) {
-      found.push({ spec: m[1], line: src.slice(0, m.index).split('\n').length });
+      const line = src.slice(0, m.index).split('\n').length;
+      const key = `${line}:${m[1]}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      found.push({ spec: m[1], line });
     }
   }
   return found;
@@ -102,7 +125,8 @@ for (const file of files) {
   const rel = relative(ROOT, file);
   const layer = layerOf(file);
   const raw = readFileSync(file, 'utf8');
-  const code = strip(raw);
+  const source = stripComments(raw); // 提取 import 用：字符串完整
+  const code = blankStrings(source); // 扫标识符用：字符串已清空
 
   if (!(layer in LEVEL)) {
     problems.push({ kind: 'LEVEL', file: rel, line: 1, msg: `未知层 "${layer}"，请先在 ARCHITECTURE.md §1 登记` });
@@ -111,7 +135,7 @@ for (const file of files) {
 
   // 1. LEVEL —— 越级 import
   const deps = [];
-  for (const { spec, line } of importsOf(code)) {
+  for (const { spec, line } of importsOf(source)) {
     if (!spec.startsWith('.')) {
       problems.push({ kind: 'LEVEL', file: rel, line, msg: `禁止外部依赖 "${spec}"（本项目零运行时依赖）` });
       continue;

@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+# 站点根是 public/，而 GitHub Pages 的分支发布只支持仓库根或 /docs。
+# 因此走 Actions 工作流显式上传 public/ ——
+# 这样 docs/ tools/ CLAUDE.md 不会被发布，与 Cloudflare Pages 的边界保持一致。
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同时只允许一个部署，新的推送取消排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # 把本地的两个执行器接进 CI：不通过就不发布
+      - name: 分层规则检查
+        run: node tools/check-layers.mjs
+      - name: 色彩令牌对比度检查
+        run: node tools/check-contrast.mjs
+      - name: 内容模型自检
+        run: |
+          node --input-type=module -e "
+            import { selfCheck } from './public/src/js/content/index.js';
+            const errs = selfCheck().filter(p => p.level === 'error');
+            if (errs.length) { console.error(errs); process.exit(1); }
+            console.log('✓ 内容模型自检通过');
+          "
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
